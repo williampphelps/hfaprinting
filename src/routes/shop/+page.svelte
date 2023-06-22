@@ -1,17 +1,12 @@
 <script>
-    import Hero from "$lib/components/Hero.svelte";
     import Masonry from "$lib/components/Masonry.svelte";
     export let data;
 
     let products = data.products;
 
 </script>
-<Hero height="auto" bg="https://ik.imagekit.io/szheqbces/tr:w-1500/6477e16e7f08e84fa467d0f7/2670c26d-1fd0-4401-a0b9-2341d52cf415">
-    <h1 class="text-4xl font-bold">The Art of Elevation</h1>
-    <p>Experience the Art of Elevation with our stunning artwork. We provide a selection of sunsets, landscapes, temples of The Church of Jesus Christ of Latter-Day Saints and more from the Cache Valley and surrounding areas.</p>
-    <span class="flex flex-row"><a href="/shop"><button class="btn variant-filled-primary">Shop Now</button></a></span>
-</Hero>  
-<div class="p-4 flex flex-col gap-8">
+<div class="p-8 flex flex-col gap-16">
+    <h1 class="text-4xl font-bold">Explore Our Artwork</h1>
     <Masonry data={products} let:columns={columns}>
         {#each columns as col}
             <div class="flex flex-col gap-4">
@@ -39,4 +34,3 @@
         {/each}
     </Masonry>
 </div>
-
