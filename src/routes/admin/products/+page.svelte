@@ -24,7 +24,7 @@
                 {/if}
                 {#each col as product}
                 <span><a href={'/admin/products/edit/' + product._id}><div class='card rounded-token variant-soft card-hover cursor-pointer flex flex-col gap-4 items-center justify-center'>
-                    <img src={"https://ik.imagekit.io/szheqbces/tr:w-500/" + product.images[0]} />
+                    <img src={"https://ik.imagekit.io/szheqbces/tr:w-500/" + product.images[0]} alt={product.name} />
                     <div class="p-4">
                         <h2 class='text-3xl'>{product.name}</h2>
                     </div>
