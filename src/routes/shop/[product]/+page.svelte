@@ -23,9 +23,9 @@
         let images = [];
         images = [...images, ...data.product.images];
 
-        if (data.product.variantsEnabled && data.product.variants.length > 0) {
+        if (data.product.variantsEnabled && data.product.variants.length > 0 && data.product.variants[variant].images.length > 0) {
             images = [...images, ...data.product.variants[variant].images]
-            if (data.product.variants[variant].optionsEnabled && data.product.variants[variant].options.length > 0) {
+            if (data.product.variants[variant].optionsEnabled && data.product.variants[variant].options.length > 0 && data.product.variants[variant].options[option].images.length > 0) {
                 images = [...images, ...data.product.variants[variant].options[option].images]
             }
         }
@@ -112,7 +112,7 @@
             {#if !data.product.variants[sVariant].optionsEnabled || data.product.variants[sVariant].options.length == 0}
                 <label class='label'>
                     <span>{data.product.variantLabel}</span>
-                    <select class='select' bind:value={sVariant}>
+                    <select class='select' bind:value={sVariant} on:input={() => sOption = 0}>
                         {#each data.product.variants as variant, v}
                         <option value={v}>{variant.name}</option>
                         {/each}
@@ -121,7 +121,7 @@
             {:else}
                 <label class='label'>
                     <span>{data.product.variantLabel}</span>
-                    <select class='select' bind:value={sVariant}>
+                    <select class='select' bind:value={sVariant} on:input={() => {sOption = 0; console.log(sOption);}}>
                         {#each data.product.variants as variant, v}
                         <option value={v}>{variant.name}</option>
                         {/each}

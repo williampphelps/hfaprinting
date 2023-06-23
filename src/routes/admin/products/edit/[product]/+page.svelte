@@ -341,7 +341,7 @@
                         {#if !newProduct.variants[sVariant].optionsEnabled || newProduct.variants[sVariant].options.length == 0}
                             <label class='label'>
                                 <span>{newProduct.variantLabel}</span>
-                                <select class='select' bind:value={sVariant}>
+                                <select class='select' bind:value={sVariant} on:input={() => {sOption = 0}}>
                                     {#each newProduct.variants as variant, v}
                                     <option value={v}>{variant.name}</option>
                                     {/each}
@@ -350,7 +350,7 @@
                         {:else}
                             <label class='label'>
                                 <span>{newProduct.variantLabel}</span>
-                                <select class='select' bind:value={sVariant}>
+                                <select class='select' bind:value={sVariant} on:input={() => {sOption = 0}}>
                                     {#each newProduct.variants as variant, v}
                                     <option value={v}>{variant.name}</option>
                                     {/each}

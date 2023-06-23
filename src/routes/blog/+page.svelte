@@ -123,7 +123,7 @@
         <div class="flex flex-col gap-4">
             {#each col as post}
             <div class="card variant-soft hover:variant-ghost card-hover flex flex-col gap-4">
-                <img src="https://ik.imagekit.io/szheqbces/tr:w-1500/6477e16e7f08e84fa467d0f7/2670c26d-1fd0-4401-a0b9-2341d52cf415" class='w-full' />
+                <img src="https://ik.imagekit.io/szheqbces/tr:w-1500/6477e16e7f08e84fa467d0f7/2670c26d-1fd0-4401-a0b9-2341d52cf415" class='w-full' alt='preview'/>
                 <span class="px-4 py-8 flex flex-col gap-4">
                     <h2 class="text-3xl font-bold">{post.title}</h2>
                     <small>Post By {post.author.name} at {new Date(post.created).toLocaleTimeString('en-US')}</small>
