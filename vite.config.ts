@@ -6,7 +6,8 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			external: [
-				'@skeletonlabs/*'
+				'@skeletonlabs/skeleton',
+				'@skeletonlabs/skeleton/styles/skeleton.css'
 			]
 		}
 	}
