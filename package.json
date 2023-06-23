@@ -22,7 +22,6 @@
     "aws-cdk-lib": "^2.84.0",
     "constructs": "10.1.156",
     "postcss": "^8.4.24",
-    "sst": "^2.15.0",
     "svelte": "^3.54.0",
     "svelte-check": "^3.0.1",
     "svelte-kit-sst": "^2.13.2",
@@ -43,6 +42,7 @@
     "mongodb": "^5.6.0",
     "mongoose": "^7.3.1",
     "shippo": "^1.7.1",
-    "svelte-markdown": "^0.2.3"
+    "svelte-markdown": "^0.2.3",
+    "sst": "^2.16.3"
   }
 }
