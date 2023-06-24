@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     import { onMount } from "svelte";
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -65,4 +65,4 @@
     
 </script>
 <div class='h-full w-full' bind:this={canvas}>
-</div>
+</div> -->
