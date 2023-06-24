@@ -4,6 +4,8 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+    export let source;
+
     let canvas;
 
     onMount(() => {
@@ -17,7 +19,7 @@
 
         const loader = new GLTFLoader();
 
-        let picLoader = new THREE.TextureLoader().load('https://ik.imagekit.io/szheqbces/tr:w-1500/6477e16e7f08e84fa467d0f7/cb7036c4-ee97-4cf7-bb4f-993830fc32d7');
+        let picLoader = new THREE.TextureLoader().load("https://ik.imagekit.io/szheqbces/" + source);
         picLoader.colorSpace = THREE.SRGBColorSpace
         picLoader.flipY = false;
 
@@ -64,5 +66,5 @@
 
     
 </script>
-<div class='h-full w-full' bind:this={canvas}>
+<div class='h-[600px] w-full' bind:this={canvas}>
 </div>

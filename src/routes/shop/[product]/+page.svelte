@@ -1,8 +1,9 @@
 <script>
     import Markdown from '$lib/components/Markdown.svelte';
+    import Preview3d from '$lib/components/Preview3d.svelte';
     import { cart } from '$lib/stores.js';
     import { popup } from '@skeletonlabs/skeleton';
-    import { toastStore } from '@skeletonlabs/skeleton';
+    import { toastStore, modalStore } from '@skeletonlabs/skeleton';
     export let data;
 
     const cartPopup = {
@@ -23,8 +24,10 @@
         let images = [];
         images = [...images, ...data.product.images];
 
-        if (data.product.variantsEnabled && data.product.variants.length > 0 && data.product.variants[variant].images.length > 0) {
-            images = [...images, ...data.product.variants[variant].images]
+        if (data.product.variantsEnabled && data.product.variants.length > 0) {
+            if (data.product.variants[variant].images.length > 0) {
+                images = [...images, ...data.product.variants[variant].images]
+            }
             if (data.product.variants[variant].optionsEnabled && data.product.variants[variant].options.length > 0 && data.product.variants[variant].options[option].images.length > 0) {
                 images = [...images, ...data.product.variants[variant].options[option].images]
             }
@@ -71,9 +74,16 @@
 
 
 </script>
+<svelte:head>
+    <title>{data.product.name} | Higher Fine Arts</title>
+    <meta name='description' content={(data.product.description).slice(0, 100) + "..."} />
+    <meta property="og:title" content={data.product.name} />
+    <meta property="og:image" content={"https://ik.imagekit.io/szheqbces/tr:w-1000/" + sImage} />
+    <meta property="og:description" content={(data.product.description).slice(0, 100) + "..."} />
+</svelte:head>
 <div class="grid grid-cols-1 md:grid-cols-2 p-8 gap-16 w-full">
     <div>
-        <img src={"https://ik.imagekit.io/szheqbces/tr:w-1000/" + sImage} alt={data.product.name} />
+        <img src={"https://ik.imagekit.io/szheqbces/tr:w-1000/" + sImage} alt={data.product.name} on:click={() => modalStore.trigger({ image: "https://ik.imagekit.io/szheqbces/tr:w-1500/" + sImage})} />
         <span class="flex flex-row gap-2 w-full flex-wrap py-4">
             {#each imageList as image}
                 <button on:click={() => {sImage = image}}><img src={"https://ik.imagekit.io/szheqbces/tr:w-1000/" + image} alt="preview" class="h-24 border border-transparent hover:border-white" /></button>
@@ -130,3 +140,5 @@
 
     </div>
 </div>
+
+<Preview3d source={sImage} />
