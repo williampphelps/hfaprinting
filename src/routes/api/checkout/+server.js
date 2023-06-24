@@ -8,13 +8,10 @@ export async function POST(event) {
 
     let body = await event.request.json();
 
-    console.log(body);
-
     let totalAmount = body.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
     totalAmount += Number(body.shipping.amount);
 
     totalAmount = Math.round(totalAmount * 100)
-    console.log(totalAmount);
 
     const paymentIntent = await stripe.paymentIntents.create({
         amount: totalAmount,

@@ -4,7 +4,7 @@
     import { cart, userAddress, userOrder } from '$lib/stores';
     import axios from 'axios';
     import { onMount } from 'svelte';
-    import { PUBLIC_STRIPE_KEY } from '$env/static/public';
+    import { PUBLIC_STRIPE_KEY, PUBLIC_DOMAIN } from '$env/static/public';
     import CartList from '$lib/components/CartList.svelte';
 
     let clientSecret;
@@ -108,7 +108,7 @@
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:5173/checkout/thanks",
+                return_url: DOMAIN + "/checkout/thanks",
                 receipt_email: emailAddress,
             },
         });
@@ -137,7 +137,7 @@
 </svelte:head>
 
 <div class="p-12">
-    <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonCompleteLabel="Place Order" class='h-full'>
+    <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonNext="variant-filled" buttonCompleteLabel="Place Order" class='h-full'>
         <Step locked={!($cart.length > 0)}>
             <svelte:fragment slot="header">
                 <h1 class="text-3xl font-bold">Review Cart: </h1>
