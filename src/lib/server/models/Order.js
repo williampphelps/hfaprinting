@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const OrderSchema = new mongoose.Schema({
     payment_intent: String,
-    donation_amount: Number,
+    donationAmount: Number,
     cart: [{}],
     shipping: {
         address_from: {},
