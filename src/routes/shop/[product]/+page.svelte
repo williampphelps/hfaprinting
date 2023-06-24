@@ -37,44 +37,31 @@
 
     function addToCart() {
 
-        let cartImage;
-        let cartPrice;
-        let cartVariant;
-        let cartOption;
+        let price = data.product.price;
+        let box = data.product.box;
 
         if (data.product.variantsEnabled && data.product.variants.length > 0) {
+            price = data.product.variants[sVariant].price;
+            box = data.product.variants[sVariant].box;
             if (data.product.variants[sVariant].optionsEnabled && data.product.variants[sVariant].options.length > 0) {
-                cartImage = data.product.variants[sVariant].options[sOption].images[0];
-                cartPrice = data.product.variants[sVariant].options[sOption].price;
-                cartVariant = data.product.variants[sVariant].name;
-                cartOption = data.product.variants[sVariant].options[sOption].name;
-            } else {
-                cartImage = data.product.variants[sVariant].images[0];
-                cartPrice = data.product.variants[sVariant].price;
-                cartVariant = data.product.variants[sVariant].name;
-                cartOption = '';
+                price = data.product.variants[sVariant].options[sOption].price;
+                box = data.product.variants[sVariant].options[sOption].box;
             }
-        } else {
-            cartImage = data.product.images[0];
-            cartPrice = data.product.price;
-            cartVariant = '';
-            cartOption = '';
         }
 
-        cart.addItem({ 
+        box.mass_unit = "lb";
+        box.distance_unit = "in";
+
+        cart.addItem({
             product: data.product._id,
-            productData: data.product,
-            image: cartImage,
-            variant: sVariant,
-            variantName: cartVariant,
-            option: sOption,
-            optionName: cartOption,
             name: data.product.name,
-            quantity: 1,
-            price: cartPrice,
-            donationEnabled: data.product.donationEnabled,
-            donationPrompt: data.product.donationPrompt
-        });
+            image: sImage,
+            variant: sVariant,
+            option: sOption,
+            price: price,
+            box: box,
+            quantity: 1
+        })
 
         toastStore.trigger({
             message: 'Item Added to Cart'

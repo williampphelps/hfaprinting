@@ -77,6 +77,7 @@ function createCart() {
 
 export const cart = createCart();
 export const cartDropdownOpen = writable(false);
+export const userOrder = localStorageStore('userOrder', {})
 
 export const userAddress = localStorageStore('userAddress', {
     "name": "",

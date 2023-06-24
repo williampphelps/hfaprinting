@@ -11,11 +11,11 @@
 
     export let determineColumns = (blockWidth) => {
       if (blockWidth < 640) {
-        return 2;
+        return 1;
       } else if (blockWidth > 640 && blockWidth < 768) {
         return 2;
       } else if (blockWidth > 768 && blockWidth < 1024) {
-        return 3;
+        return 2;
       } else if (blockWidth > 1024 && blockWidth < 1280) {
         return 3;
       } else if (blockWidth > 1280 && blockWidth < 1536) {

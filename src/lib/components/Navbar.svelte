@@ -2,7 +2,8 @@
     import { LightSwitch, modeCurrent } from '@skeletonlabs/skeleton';
     import { popup } from '@skeletonlabs/skeleton';
     import type { PopupSettings } from '@skeletonlabs/skeleton';
-    import { cart, cartDropdownOpen } from '$lib/stores';
+    import { cart } from '$lib/stores';
+    import CartList from './CartList.svelte';
     let open = false;
     let navbarLinksClass = 'w-full hidden sm:flex flex-row items-stretch justify-end sm:items-center px-8';
 
@@ -58,23 +59,11 @@
                     </div>
                     {:else}
                     <div class="flex flex-col max-h-64 overflow-auto w-full">
-                        
-                        {#each $cart as cartItem}
-                                <div class="p-4 card flex flex-row gap-4 w-full justify-stretch">
-                                    <img class="w-12 h-12 rounded object-cover" src={"https://ik.imagekit.io/szheqbces/" + cartItem.image} alt={cartItem.name} />
-                                    <span class="flex flex-col gap-2">
-                                        <a href={"/shop/" + cartItem.product}><p class="font-bold">{cartItem.productData.name}</p></a>
-                                        <small>${(cartItem.price*cartItem.quantity).toFixed(2)}</small>
-                                        <small>{#if cartItem.variantName != ""}{cartItem.variantName} - {#if cartItem.optionName != ""}{cartItem.optionName}{/if}{/if}</small>
-                                        <small>Quantity: {cartItem.quantity}</small>
-                                        <button class='chip variant-filled-error text-xs' on:click={() => {cart.removeItem(cartItem)}}><span class="material-icons">delete</span> Remove From Cart</button>
-                                    </span>
-                                </div>
-                            {/each}
-                        </div>
-                        <div class="card flex flex-row items-end justify-end p-4">
-                            <a href="/checkout/shipping/">Continue To Checkout -></a>
-                        </div>
+                        <CartList />
+                    </div>
+                    <div class="card flex flex-row items-end justify-end p-4">
+                        <a href="/checkout/shipping/">Continue To Checkout -></a>
+                    </div>
                     {/if}
                 </div>
                 

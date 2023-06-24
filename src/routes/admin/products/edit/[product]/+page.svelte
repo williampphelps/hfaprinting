@@ -19,6 +19,7 @@
     let newProduct = data.product;
 
     async function handleSubmit() {
+        newProduct.description = newProduct.description.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
         let result = await axios.put('/api/products/' + data.product._id, newProduct);
 
         goto('/admin/products');
@@ -32,7 +33,7 @@
         <li class="crumb-separator" aria-hidden>&rsaquo;</li>
         <li class="crumb"><a class="anchor" href="/admin">Admin Dashboard</a></li>
         <li class="crumb-separator" aria-hidden>&rsaquo;</li>
-        <li class="crumb"><a class="anchor" href="/admin">Manage Products</a></li>
+        <li class="crumb"><a class="anchor" href="/admin/products">Manage Products</a></li>
         <li class="crumb-separator" aria-hidden>&rsaquo;</li>
         <li>Create Product</li>
     </ol>

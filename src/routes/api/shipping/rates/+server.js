@@ -11,7 +11,5 @@ export async function POST({ request }) {
         "parcels": shipping.parcels,
         "async": false
     });
-
-    console.log(shipment);
     return json(shipment)
 }

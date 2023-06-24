@@ -1,9 +1,25 @@
 <script>
-    import { Stepper, Step, toastStore } from '@skeletonlabs/skeleton';
+    import { Stepper, Step, toastStore, modeCurrent } from '@skeletonlabs/skeleton';
     import ShipMethod from '$lib/components/ShipMethod.svelte';
-    import { cart, userAddress } from '$lib/stores';
+    import { cart, userAddress, userOrder } from '$lib/stores';
     import axios from 'axios';
-    let chosen;
+    import { onMount } from 'svelte';
+    import { PUBLIC_STRIPE_KEY } from '$env/static/public';
+    import CartList from '$lib/components/CartList.svelte';
+
+    let clientSecret;
+    let stripe;
+    let elements;
+    let emailAddress = 'williampaul@phelpsfamily.org';
+    let addressValid = false;
+    let chosen = {
+        object_id: 'pickup',
+        amount: 0
+    };
+
+    onMount(() => {
+        addressValid = validateAddress($userAddress);
+    });
 
     let shippingCart = {
         address_from: {
@@ -25,56 +41,19 @@
         }]
     }
 
-    let order = {
-        donation: 0
-    }
+    let donation = 0;
 
     async function getRates() {
 
         let parcels = [];
 
         for (const item of $cart) {
-            if (item.productData.variantsEnabled && item.productData.variants.length > 0) {
-                if (item.productData.variants[item.variant].optionsEnabled && item.productData.variants[item.variant].options.length > 0) {
-                    for (let i = 0; i < item.quantity; i++) {
-                        parcels = [{
-                            "length": item.productData.variants[item.variant].options[item.option].box.length,
-                            "width": item.productData.variants[item.variant].options[item.option].box.width,
-                            "height": item.productData.variants[item.variant].options[item.option].box.height,
-                            "distance_unit": "in",
-                            "weight": item.productData.variants[item.variant].options[item.option].box.weight,
-                            "mass_unit": "lb"
-                        }, ...parcels]
-                    }
-                } else {
-                    for (let i = 0; i < item.quantity; i++) {
-                        parcels = [{
-                            "length": item.productData.variants[item.variant].box.length,
-                            "width": item.productData.variants[item.variant].box.width,
-                            "height": item.productData.variants[item.variant].box.height,
-                            "distance_unit": "in",
-                            "weight": item.productData.variants[item.variant].box.weight,
-                            "mass_unit": "lb"
-                        }, ...parcels]
-                    }
-                }
-            } else {
-                for (let i = 0; i < item.quantity; i++) {
-                    parcels = [{
-                        "length": item.productData.box.length,
-                        "width": item.productData.box.width,
-                        "height": item.productData.box.height,
-                        "distance_unit": "in",
-                        "weight": item.productData.box.weight,
-                        "mass_unit": "lb"
-                    }, ...parcels]
-                }
+            for (let i = 0; i < item.quantity; i++) {
+                parcels = [item.box, ...parcels]
             }
         }
 
         shippingCart.parcels = parcels;
-
-        console.log({shippingCart})
 
         let result = await axios.post('/api/shipping/rates', shippingCart);
 
@@ -85,31 +64,86 @@
         if (e.detail.state.current == 2) {
             shipmentRates = getRates();
         }
+        if (e.detail.state.current == 3) {
+            setTimeout(initPaymentForm, 500);
+        }
     }
 
     let shipmentRates = new Promise(() => {});
+
+    async function initPaymentForm() {
+        stripe = Stripe(PUBLIC_STRIPE_KEY);
+        let appearance = {
+            theme: 'night'
+        }
+        if ($modeCurrent) {
+            appearance.theme = 'stripe';
+        }
+        let result = await axios.post('/api/checkout/', { cart: $cart, shipping: chosen });
+        clientSecret = result.data.clientSecret;
+        elements = stripe.elements({ clientSecret });
+        const paymentElement = elements.create('payment');
+        paymentElement.mount('#payment-element');
+    }
+
+    async function validateAddress(address) {
+        address.validate = true;
+        let results = await axios.post('/api/shipping/validate_address', address);
+
+        console.log(results.data.validation_results.is_valid);
+
+        return results.data.validation_results.is_valid;
+    }
+
+    async function placeOrder() {
+
+        $userOrder = {
+            shipping: shippingCart,
+            cart: $cart,
+            donationAmount: donation,
+            shippingMethod: chosen,
+        }
+
+        const { error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                // Make sure to change this to your payment completion page
+                return_url: "http://localhost:5173/checkout/thanks",
+                receipt_email: emailAddress,
+            },
+        });
+
+        if (error.type === "card_error" || error.type === "validation_error") {
+            toastStore.trigger({
+                message: error.message,
+                background: 'variant-filled-error'
+            })
+        } else {
+            toastStore.trigger({
+                message: 'An Unexpected Error Occured!',
+                background: 'variant-filled-error'
+            })
+        }
+
+    }
+
+    $: cartSum = cart.sum;
+
+    $: total = (($cartSum + donation) + (Number(chosen.amount))).toFixed(2);
 </script>
 
+<svelte:head>
+    <script src="https://js.stripe.com/v3/"></script>
+</svelte:head>
 
 <div class="p-12">
-    <Stepper on:step={onStepHandler} class='h-full'>
-        <Step>
+    <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonCompleteLabel="Place Order" class='h-full'>
+        <Step locked={!($cart.length > 0)}>
             <svelte:fragment slot="header">
                 <h1 class="text-3xl font-bold">Review Cart: </h1>
             </svelte:fragment>
             <div class="flex flex-col gap-2 w-full">        
-                {#each $cart as cartItem}
-                    <div class="p-4 card flex flex-row gap-4 w-full justify-stretch">
-                        <img class="w-12 h-12 rounded object-cover" src={"https://ik.imagekit.io/szheqbces/" + cartItem.image} alt={cartItem.name} />
-                        <span class="flex flex-col gap-2 w-full">
-                            <a href={"/shop/" + cartItem.product}><p class="font-bold">{cartItem.productData.name}</p></a>
-                            <small>${(cartItem.price*cartItem.quantity).toFixed(2)}</small>
-                            <small>{#if cartItem.variantName != ""}{cartItem.variantName} - {#if cartItem.optionName != ""}{cartItem.optionName}{/if}{/if}</small>
-                            <small>Quantity: {cartItem.quantity}</small>
-                            <button class='chip variant-filled-error text-xs w-fit' on:click={() => {cart.removeItem(cartItem)}}><span class="material-icons">delete</span> Remove From Cart</button>
-                        </span>
-                    </div>
-                {/each}
+                <CartList />
             </div>
             <div class="py-8 flex flex-col gap-4">
                 <h2 class="text-xl font-bold">Consider Donating</h2>
@@ -118,12 +152,17 @@
                     <span>Donation Amount</span>
                     <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
                         <div class="input-group-shim">$</div>
-                        <input class="invalid:input-error" type="number" placeholder="Donation Amount" min="0" step="0.01" inputmode="numeric" pattern="[0-9]+(\\.[0-9][0-9]?)?" bind:value={order.donation} />
+                        <input class="invalid:input-error" type="number" placeholder="Donation Amount" min="0" step="0.01" inputmode="numeric" pattern="[0-9]+(\\.[0-9][0-9]?)?" bind:value={donation} />
                     </div>
                 </label>
             </div>
+            <div class="flex flex-col items-end">
+                <span class="text-2xl font-bold">Total:</span>
+                <b class="text-green-500 text-xl">${total}</b>
+            </div>
+            
         </Step>
-        <Step>
+        <Step locked={!addressValid}>
             <svelte:fragment slot="header">
                 <h1 class="text-3xl font-bold">Enter Your Shipping Address:</h1>
             </svelte:fragment>
@@ -134,20 +173,20 @@
                 </label>
                 <label class="label">
                     <span>Address Line 1</span>
-                    <input class="input" type="text" placeholder="123 N Main St" bind:value={$userAddress.street1} />
+                    <input class="input" type="text" placeholder="123 N Main St" bind:value={$userAddress.street1} on:input={async () => addressValid = await validateAddress($userAddress)} />
                 </label>
                 <label class="label">
                     <span>Address Line 2</span>
-                    <input class="input" type="text" placeholder="Apt. 1" bind:value={$userAddress.street2} />
+                    <input class="input" type="text" placeholder="Apt. 1" bind:value={$userAddress.street2} on:input={async () => addressValid = await validateAddress($userAddress)} />
                 </label>
                 <label class="label w-full">
                     <span>City</span>
-                    <input class="input" type="text" placeholder="City" bind:value={$userAddress.city} />
+                    <input class="input" type="text" placeholder="City" bind:value={$userAddress.city} on:input={async () => addressValid = await validateAddress($userAddress)} />
                 </label>
                 <span class="flex flex-col sm:flex-row gap-4">
                     <label class="label w-full">
                         <span>State</span>
-                        <select class="select rounded-token" bind:value={$userAddress.state}>
+                        <select class="select rounded-token" bind:value={$userAddress.state} on:input={async () => addressValid = await validateAddress($userAddress)}>
                             <option value='' disabled>Select a state...</option>
                             <option value='AL'>Alabama</option>
                             <option value='AK'>Alaska</option>
@@ -204,10 +243,14 @@
                     </label>
                     <label class="label w-full">
                         <span>Zip Code</span>
-                        <input class="input" type="text" placeholder="12345" bind:value={$userAddress.zip} />
+                        <input class="input" type="text" placeholder="12345" bind:value={$userAddress.zip} on:input={async () => addressValid = await validateAddress($userAddress)} />
                     </label>
                 </span>
             </form>
+            <div class="flex flex-col items-end">
+                <span class="text-2xl font-bold">Total:</span>
+                <b class="text-green-500 text-xl">${total}</b>
+            </div>
         </Step>
         <Step>
             <svelte:fragment slot="header">
@@ -248,13 +291,23 @@
                 <ShipMethod rates={data} bind:value={chosen} />
                 {:catch error}
                 <p>{error}</p>
+                <p>There seems to be an error with getting the available shipping methods. Try going back and making sure your address is correct.</p>
                 {/await}
+                <div class="flex flex-col items-end">
+                    <span class="text-2xl font-bold">Total:</span>
+                    <b class="text-green-500 text-xl">${total}</b>
+                </div>
             </div>
         </Step>
         <Step>
             <svelte:fragment slot="header">
                 <h1 class="text-3xl font-bold">Payment Details:</h1>
             </svelte:fragment>
+            <div id="payment-element"></div>
+            <div class="flex flex-col items-end">
+                <span class="text-2xl font-bold">Total:</span>
+                <b class="text-green-500 text-xl">${total}</b>
+            </div>
         </Step>
     </Stepper>
 </div>

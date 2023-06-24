@@ -21,8 +21,8 @@
         price: 0.00,
         images: [],
         variants: [],
-        variantLabel: "Variant",
-        variantsEnabled: true,
+        variantLabel: "Size",
+        variantsEnabled: false,
         donationEnabled: false,
         donationPrompt: "",
         box: {
@@ -35,6 +35,7 @@
     };
 
     async function handleSubmit() {
+        newProduct.description = newProduct.description.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
         let result = await axios.post('/api/products', newProduct);
 
         goto('/admin/products');
@@ -48,7 +49,7 @@
         <li class="crumb-separator" aria-hidden>&rsaquo;</li>
         <li class="crumb"><a class="anchor" href="/admin">Admin Dashboard</a></li>
         <li class="crumb-separator" aria-hidden>&rsaquo;</li>
-        <li class="crumb"><a class="anchor" href="/admin">Manage Products</a></li>
+        <li class="crumb"><a class="anchor" href="/admin/products">Manage Products</a></li>
         <li class="crumb-separator" aria-hidden>&rsaquo;</li>
         <li>Create Product</li>
     </ol>
