@@ -54,7 +54,7 @@
         <li>Create Product</li>
     </ol>
 
-    <Stepper on:complete={handleSubmit}>
+    <Stepper on:complete={handleSubmit} buttonNext="variant-filled-secondary bg-secondary-500">
         <Step>
             <svelte:fragment slot="header">
                 <h2 class='text-2xl'>Basic Info</h2>
