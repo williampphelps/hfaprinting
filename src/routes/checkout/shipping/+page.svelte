@@ -137,7 +137,7 @@
 </svelte:head>
 
 <div class="p-12">
-    <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonNext="variant-filled" buttonCompleteLabel="Place Order" class='h-full'>
+    <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonNext="variant-filled-secondary" buttonCompleteLabel="Place Order" class='h-full'>
         <Step locked={!($cart.length > 0)}>
             <svelte:fragment slot="header">
                 <h1 class="text-3xl font-bold">Review Cart: </h1>
