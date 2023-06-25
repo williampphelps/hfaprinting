@@ -12,7 +12,7 @@ export default {
     app.stack(function Site({ stack }) {
       const site = new SvelteKitSite(stack, "Site", {
         customDomain: {
-          domainName: app.stage == "prod" ? "printing.higherfinearts.com" : app.stage + ".higherfinearts.com",
+          domainName: app.stage == "prod" ? "higherfinearts.com" : app.stage + ".higherfinearts.com",
           hostedZone: "higherfinearts.com"
         }
       });
