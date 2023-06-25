@@ -1,6 +1,7 @@
 import type { SSTConfig } from "sst";
 import { SvelteKitSite } from "sst/constructs";
 
+
 export default {
   config(_input) {
     return {
@@ -10,11 +11,16 @@ export default {
   },
   stacks(app) {
     app.stack(function Site({ stack }) {
+      let domainConfig = {
+        domainName: app.stage == "prod" ? "higherfinearts.com" : app.stage + ".higherfinearts.com",
+        hostedZone: "higherfinearts.com"
+      }
+
+      if (app.stage == "prod") {
+        domainConfig.domainAlias = 'www.higherfinearts.com'
+      }
       const site = new SvelteKitSite(stack, "Site", {
-        customDomain: {
-          domainName: app.stage == "prod" ? "higherfinearts.com" : app.stage + ".higherfinearts.com",
-          hostedZone: "higherfinearts.com"
-        }
+        customDomain: domainConfig
       });
       stack.addOutputs({
         url: site.url,
