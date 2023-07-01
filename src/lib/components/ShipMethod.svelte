@@ -4,7 +4,7 @@
     export let rates;
 </script>
 <RadioGroup display="grid grid-cols-1 md:grid-cols-2 gap-4" active="variant-ghost" hover="variant-soft hover:variant-ghost" background="none" border="none">
-    <RadioItem name='rate' bind:group={value} value={ { object_id: 'pickup', amount: 0 }}>
+    <RadioItem name='rate' bind:group={value} value={ { object_id: 'pickup', amount: 0, servicelevel: { name: 'free pickup' } }}>
         <span class="flex flex-row gap-4 p-4 text-left items-center">
             <span class="flex flex-col gap-4 w-full">
                 <span class="flex flex-row items-center gap-4 w-full">
