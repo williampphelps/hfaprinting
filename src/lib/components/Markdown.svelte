@@ -3,6 +3,6 @@
     export let source;
 </script>
 
-<div class="prose dark:prose-invert w-full">
+<div class="prose dark:prose-invert w-full max-w-none">
     <SvelteMarkdown source={source} />
 </div>

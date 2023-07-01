@@ -140,3 +140,5 @@
 
     </div>
 </div>
+
+<!-- <Preview3d source={sImage} /> -->

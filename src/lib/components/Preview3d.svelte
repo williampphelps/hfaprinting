@@ -31,6 +31,8 @@
             frame.rotation.z = 1.5708;
             frame.rotation.y = 1.5708;
 
+            console.log(frame);
+
             frame.children[0].children[1].material.map = picLoader;
 
         }, undefined, function ( error ) {

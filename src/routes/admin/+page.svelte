@@ -13,8 +13,8 @@
         <a href='/admin/orders'><div class="card p-4">
             <p>Manage Orders</p>
         </div></a>
-        <a href='/admin/inventory'><div class="card p-4">
-            <p>Manage Inventory</p>
+        <a href='/admin/blog'><div class="card p-4">
+            <p>Manage Blog</p>
         </div></a>
     </div>
 </div>
