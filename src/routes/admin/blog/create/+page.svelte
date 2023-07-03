@@ -46,12 +46,7 @@
 
         if (!errored) {
             let result = await axios.post('/api/blog', newPost);
-
-            console.log(result);
-
-            if (result.statusText == 'OK') {
-                goto('/admin/blog');
-            }
+            goto('/admin/blog');
         }
         
     }
