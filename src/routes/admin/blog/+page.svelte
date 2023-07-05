@@ -3,6 +3,9 @@
     export let data;
     let posts = data.posts;
 </script>
+<svelte:head>
+    <title>Manage Blog | Higher Fine Arts</title>
+</svelte:head>
 <div class='p-8 flex flex-col gap-4'>
     
     <h1 class='font-bold text-4xl'>Manage Blog</h1>

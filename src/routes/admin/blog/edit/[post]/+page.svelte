@@ -59,6 +59,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>Edit Post | Higher Fine Arts</title>
+</svelte:head>
+
 <div class='p-8 flex flex-col gap-4'>
     
     <h1 class='font-bold text-4xl'>Create A Blog Post</h1>

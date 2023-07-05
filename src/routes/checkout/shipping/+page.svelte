@@ -133,11 +133,12 @@
 </script>
 
 <svelte:head>
+    <title>Checkout | Higher Fine Arts</title>
     <script src="https://js.stripe.com/v3/"></script>
 </svelte:head>
 
 <div class="p-12">
-    <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonNext="variant-filled-secondary bg-secondary-500" buttonCompleteLabel="Place Order" class='h-full'>
+    <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonNext="variant-filled-secondary bg-secondary-500" buttonComplete="variant-filled-primary bg-primary-500" buttonCompleteLabel="Place Order" class='h-full'>
         <Step locked={!($cart.length > 0)}>
             <svelte:fragment slot="header">
                 <h1 class="text-3xl font-bold">Review Cart: </h1>

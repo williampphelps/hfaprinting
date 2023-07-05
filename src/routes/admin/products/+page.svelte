@@ -3,6 +3,9 @@
 
     export let data;
 </script>
+<svelte:head>
+    <title>Manage Products | Higher Fine Arts</title>
+</svelte:head>
 <div class='p-8 flex flex-col gap-4'>
     
     <h1 class='font-bold text-4xl'>Manage Products</h1>

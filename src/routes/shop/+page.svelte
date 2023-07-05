@@ -5,6 +5,9 @@
     let products = data.products;
 
 </script>
+<svelte:head>
+    <title>Shop | Higher Fine Arts</title>
+</svelte:head>
 <div class="p-8 flex flex-col gap-16">
     <h1 class="text-4xl font-bold">Explore Our Artwork</h1>
     <Masonry data={products} let:columns={columns}>

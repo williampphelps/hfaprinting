@@ -6,6 +6,9 @@
     let products = data.products;
 
 </script>
+<svelte:head>
+    <title>Home | Higher Fine Arts</title>
+</svelte:head>
 <Hero height="auto" bg="https://ik.imagekit.io/szheqbces/tr:w-1500/6477e16e7f08e84fa467d0f7/2670c26d-1fd0-4401-a0b9-2341d52cf415">
     <h1 class="text-4xl font-bold">The Art of Elevation</h1>
     <p>Experience the Art of Elevation with our stunning artwork. We provide a selection of sunsets, landscapes, temples of The Church of Jesus Christ of Latter-Day Saints and more from the Cache Valley and surrounding areas.</p>

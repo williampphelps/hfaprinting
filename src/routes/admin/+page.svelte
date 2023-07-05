@@ -1,3 +1,6 @@
+<svelte:head>
+    <title>Admin | Higher Fine Arts</title>
+</svelte:head>
 <div class='p-8 flex flex-col gap-4'>
     
     <h1 class='font-bold text-4xl'>Admin Dashboard</h1>

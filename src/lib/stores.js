@@ -5,10 +5,8 @@ import { localStorageStore } from '@skeletonlabs/skeleton';
 
 function createCart() {
 
-    const _cart = writable(browser && (browser && JSON.parse(localStorage.getItem('cart')) || []));
+    const _cart = localStorageStore('cart', []);
     const { set, subscribe, update } = _cart;
-
-    subscribe((val) => browser && (localStorage.setItem('cart', JSON.stringify(val))))
 
     const sum = derived(_cart, $_cart => $_cart.reduce((total, item) => total + (item.price * item.quantity), 0));
 
