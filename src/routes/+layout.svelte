@@ -17,8 +17,6 @@
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
     import Navbar from '$lib/components/Navbar.svelte';
 
-    console.log($page.data.session);
-
 </script>
 <svelte:head>{@html `<script>${autoModeWatcher.toString()} autoModeWatcher();</script>`}</svelte:head>
 <Modal />

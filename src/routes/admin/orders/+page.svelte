@@ -35,7 +35,7 @@
                 <div class='card token-rounded p-4 flex flex-row gap-4'>
                     <Avatar src={order.shippingMethod.provider_image_200} class='w-12 h-12 aspect-square object-contain' />
                     <span class="flex flex-col gap-4">
-                        <p>{order.shippingMethod.provider} - {order.shippingMethod.servicelevel.name}</p>
+                        <p>{order.shippingMethod.provider} - {order.shippingMethod.servicelevel?.name}</p>
                         <small>{order.shippingMethod.duration_terms}</small>
                         <b class="text-green-500">${order.shippingMethod.amount}</b>
                     </span>

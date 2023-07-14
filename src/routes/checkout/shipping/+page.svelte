@@ -12,10 +12,7 @@
     let elements;
     let emailAddress = 'williampaul@phelpsfamily.org';
     let addressValid = false;
-    let chosen = {
-        object_id: 'pickup',
-        amount: 0
-    };
+    let chosen = { object_id: 'pickup', amount: 0, servicelevel: { name: 'free pickup' }, provider: 'Free Pickup', duration_terms: 'Customer will be notified when order has been "shipped". ' };
 
     onMount(() => {
         addressValid = validateAddress($userAddress);
