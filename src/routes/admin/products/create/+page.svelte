@@ -1,7 +1,9 @@
 <script>
-    import { page } from '$app/stores';
     import { Step, Stepper, SlideToggle, modalStore, Avatar } from "@skeletonlabs/skeleton";
     import Markdown from '$lib/components/Markdown.svelte';
+
+    export let data;
+    console.log(data);
 
     let sVariant = 0;
     let sOption = 0;
@@ -31,7 +33,7 @@
             length: 0,
             weight: 0
         },
-        "store": $page.data.session.user.id
+        "store": data.shop._id
     };
 
     async function handleSubmit() {
