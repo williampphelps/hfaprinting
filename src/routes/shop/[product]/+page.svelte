@@ -66,6 +66,13 @@
             quantity: 1
         })
 
+        fbq('track', 'AddToCart', {
+            content_name: data.product.name,
+            content_type: 'product',
+            value: price,
+            currency: 'USD'
+        });
+
         toastStore.trigger({
             message: 'Item Added to Cart'
         });
