@@ -7,17 +7,6 @@ import { sequence } from "@sveltejs/kit/hooks";
 import { decode, encode } from "@auth/core/jwt";
 import { AUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, DATABASE_NAME } from '$env/static/private';
 
-import process from "process";
-
-process.on("SIGINT", function () {
-    console.error('exiting...')
-  process.exit();
-});
-process.on("SIGTERM", function () {
-    console.error('exiting...')
-  process.exit();
-});
-
 const mongoAdapter = MongoDBAdapter(clientPromise, {
     databaseName: DATABASE_NAME
 });
