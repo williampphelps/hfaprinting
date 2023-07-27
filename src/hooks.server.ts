@@ -1,15 +1,20 @@
 import { SvelteKitAuth } from "@auth/sveltekit";
 import Google from "@auth/core/providers/google";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import clientPromise from "$lib/server/auth/dbConnect";
+import Credentials from "@auth/core/providers/credentials";
 import { redirect, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { decode, encode } from "@auth/core/jwt";
 import { AUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, DATABASE_NAME } from '$env/static/private';
+import { MyAdapter } from "$lib/server/auth/myAdapter";
+import dbConnect from "$lib/server/models/dbConnect";
+import User from "$lib/server/models/User";
+import bcrypt from 'bcrypt';
+import Account from "$lib/server/models/Account";
+import { randomUUID } from 'crypto'
 
-const mongoAdapter = MongoDBAdapter(clientPromise, {
-    databaseName: DATABASE_NAME
-});
+dbConnect();
+
+const mongoAdapter = MyAdapter();
 
 export const handle: Handle = sequence(
   SvelteKitAuth(async (event) => {
@@ -18,43 +23,57 @@ export const handle: Handle = sequence(
           Google({
               clientId: GOOGLE_CLIENT_ID,
               clientSecret: GOOGLE_CLIENT_SECRET
+          }),
+          Credentials({
+            name: "credentials",
+            credentials: {
+                username: { label: "Email Address", type: "email" },
+                password: { label: "Password", type: "password" }
+            },
+            async authorize(args) {
+                let user = await User.findOne({ email: args.username });
+
+                if (user) {
+                    let account = await Account.findOne({ userId: user._id });
+
+                    if (account && account.type == 'credentials') {
+                        user.id = user._id
+                        let match = await bcrypt.compare(args.password, user.password);
+
+                        if (match) {
+                            return user
+                        }
+                    }
+                }
+
+                return null
+            }
           })
       ],
       adapter: mongoAdapter,
       callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
-            if (user) {
-                if (credentials) {
+            console.log('signIn:', { user, account, profile, email, credentials });
+            if (user && credentials) {
+                let sessionToken = randomUUID();
+                let expiryDate = new Date(Date.now() + 1000 * 60 * 30)
 
-                    let sessionToken = randomUUID();
-                    let expiryDate = new Date(Date.now() + 1000 * 60 * 30)
+                await mongoAdapter.createSession({
+                    userId: user._id,
+                    sessionToken: sessionToken,
+                    expires: expiryDate
+                })
 
-                    await mongoAdapter.createSession({
-                        userId: user._id,
-                        sessionToken: sessionToken,
-                        expires: expiryDate
-                    })
-
-                    event.cookies.set('next-auth.session-token', sessionToken, {
-                        expires: expiryDate
-                    })
-                    
-                }
-                return true
+                event.cookies.set('next-auth.session-token', sessionToken, {
+                    expires: expiryDate
+                })
             }
-            return false
+            return true
         },
         async session({ session, user, token }) {
             if (user) {
                 session.user.id = user.id;
                 session.user.type = user.type;
-                // if (superadmins.includes(user.email) && user.type != "superadmin") {
-                //     await User.findByIdAndUpdate(user.id, { type: "superadmin" });
-                //     session.user.type = "superadmin";
-                // } else if (!user.type) {
-                //     await User.findByIdAndUpdate(user.id, { type: "user"})
-                //     session.user.type = "user";
-                // }
             }
             if (token) {
                 session.user = token.user;
@@ -102,7 +121,7 @@ export const handle: Handle = sequence(
     return authOptions
   }),
   async function ({event, resolve}) {
-    if (event.url.pathname.startsWith("/admin") && !event.url.pathname.startsWith('/admin/signin')) {
+    if (event.url.pathname.startsWith("/admin") && !event.url.pathname.startsWith('/admin/signin') && !event.url.pathname.startsWith('/admin/signup')) {
       const session = await event.locals.getSession();
       if (!session) {
         throw redirect(303, "/admin/signin");

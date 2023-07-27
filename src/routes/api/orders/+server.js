@@ -24,7 +24,7 @@ export async function POST(event) {
 
     sgMail.setApiKey(SENDGRID_API_KEY);
     sgMail.send({
-        to: 'williampaul@phelpsfamily.org',
+        to: ['william@higherfinearts.com', 'william@phelpsfamily.org'],
         from: 'william@higherfinearts.com',
         templateId: "d-175faa7e3f37491cb9b3c7628d06b3a6",
         dynamicTemplateData: {

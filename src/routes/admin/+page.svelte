@@ -1,5 +1,5 @@
 <script>
-    import { goto } from "$app/navigation";
+    import { goto, invalidateAll } from "$app/navigation";
     import { page } from "$app/stores";
 
     import ImageModal from '$lib/components/ImageModal.svelte';
@@ -32,8 +32,7 @@
     async function createShop() {
 
         let result = await axios.post('/api/shops', newShop);
-
-        setTimeout(() => { goto('/admin')}, 500);
+        invalidateAll();
     }
 </script>
 <svelte:head>

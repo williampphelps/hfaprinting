@@ -1,10 +1,13 @@
 <script>
     import Masonry from "$lib/components/Masonry.svelte";
     import ProductList from "$lib/components/ProductList.svelte";
-    import { Avatar } from "@skeletonlabs/skeleton";
+    import { Avatar, modalStore } from "@skeletonlabs/skeleton";
+
+    import OrderModal from '$lib/components/OrderModal.svelte';
 
     export let data;
     let orders = data.orders;
+
 </script>
 
 <svelte:head>
@@ -27,7 +30,7 @@
             {#each col as order}
             <div class="card p-4 flex flex-col gap-4">
                 <h2 class="text-xl font-bold">{order.shipping.address_to.name}</h2>
-                <small>{order.shipping.address_to.street1}, {#if order.shipping.address_to.street2 != ""}, {order.shipping.address_to.street2}{/if} {order.shipping.address_to.city}, {order.shipping.address_to.state} {order.shipping.address_to.zip}</small>
+                <small>{order.shipping.address_to.street1}, {#if order.shipping.address_to.street2 != ""}{order.shipping.address_to.street2}, {/if} {order.shipping.address_to.city}, {order.shipping.address_to.state} {order.shipping.address_to.zip}</small>
                 <small>Donation Amount: <b>${order.donationAmount}</b></small>
                 <b>Products Ordered:</b>
                 <ProductList items={order.cart} />
@@ -40,6 +43,7 @@
                         <b class="text-green-500">${order.shippingMethod.amount}</b>
                     </span>
                 </div>
+                <button class='btn variant-filled-primary' on:click={() => modalStore.trigger({ type: 'component', component: { ref: OrderModal, props: { order: order }}})}>Manage Order</button>
             </div>
             {/each}
         </div>
