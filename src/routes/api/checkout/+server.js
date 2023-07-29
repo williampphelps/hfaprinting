@@ -10,7 +10,7 @@ export async function POST(event) {
 
     let totalAmount = body.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
     totalAmount += Number(body.shipping.amount);
-
+    totalAmount += body.donation;
     totalAmount = Math.round(totalAmount * 100)
 
     const paymentIntent = await stripe.paymentIntents.create({

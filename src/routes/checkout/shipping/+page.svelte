@@ -7,6 +7,8 @@
     import { PUBLIC_STRIPE_KEY, PUBLIC_DOMAIN } from '$env/static/public';
     import CartList from '$lib/components/CartList.svelte';
 
+    let donation = 0;
+
     let clientSecret;
     let stripe;
     let elements;
@@ -37,8 +39,6 @@
             "mass_unit": "lb"
         }]
     }
-
-    let donation = 0;
 
     async function getRates() {
 
@@ -76,7 +76,7 @@
         if ($modeCurrent) {
             appearance.theme = 'stripe';
         }
-        let result = await axios.post('/api/checkout/', { cart: $cart, shipping: chosen });
+        let result = await axios.post('/api/checkout/', { cart: $cart, shipping: chosen, donation: donation });
         clientSecret = result.data.clientSecret;
         elements = stripe.elements({ clientSecret });
         const paymentElement = elements.create('payment');
@@ -124,9 +124,19 @@
 
     }
 
+    function validateDonationCart(carts, donation) {
+        console.log({carts, donation})
+        if (donation >= 0 && carts >= 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     $: cartSum = cart.sum;
 
     $: total = (($cartSum + donation) + (Number(chosen.amount))).toFixed(2);
+    $: stepOneLocked = validateDonationCart($cart.length, donation)
 </script>
 
 <svelte:head>
@@ -136,7 +146,7 @@
 
 <div class="p-12">
     <Stepper on:step={onStepHandler} on:complete={placeOrder} buttonNext="variant-filled-secondary bg-secondary-500" buttonComplete="variant-filled-primary bg-primary-500" buttonCompleteLabel="Place Order" class='h-full'>
-        <Step locked={!($cart.length > 0)}>
+        <Step locked={stepOneLocked}>
             <svelte:fragment slot="header">
                 <h1 class="text-3xl font-bold">Review Cart: </h1>
             </svelte:fragment>
