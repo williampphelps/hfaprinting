@@ -1,12 +1,15 @@
 <script>
+    import axios from "axios";
     import ProductList from "./ProductList.svelte";
     import { Avatar } from "@skeletonlabs/skeleton";
     export let order;
     console.log(order);
 </script>
-<div class="card rounded-token w-modal p-8 flex flex-col gap-4">
+<div class="card rounded-token w-modal p-8 flex flex-col gap-4 h-3/4 overflow-auto">
     <h2 class="text-xl font-bold">{order.shipping.address_to.name}</h2>
     <small>{order.shipping.address_to.street1}, {#if order.shipping.address_to.street2 != ""}{order.shipping.address_to.street2}, {/if} {order.shipping.address_to.city}, {order.shipping.address_to.state} {order.shipping.address_to.zip}</small>
+    <small>{order.shipping.address_to.phone}</small>
+    <small>{order.shipping.address_to.email}</small>
     <small>Donation Amount: <b>${order.donationAmount}</b></small>
     <b>Products Ordered:</b>
     <ProductList items={order.cart} />
@@ -55,4 +58,5 @@
         </div>
     </div>
     {/each}
+    <!-- <button class="btn variant-filled-secondary" on:click={() => getShippingLabel(order.shippingMethod)}>Get Shipping Label</button> -->
 </div>

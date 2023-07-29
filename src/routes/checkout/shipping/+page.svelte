@@ -170,6 +170,14 @@
                     <input class="input" type="text" placeholder="John Doe..." bind:value={$userAddress.name} />
                 </label>
                 <label class="label">
+                    <span>Email Address</span>
+                    <input class="input" type="email" placeholder="john.doe@gmail.com..." bind:value={$userAddress.email} />
+                </label>
+                <label class="label">
+                    <span>Phone Number</span>
+                    <input class="input" type="tel" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" placeholder="(123)456-7890" bind:value={$userAddress.phone} />
+                </label>
+                <label class="label">
                     <span>Address Line 1</span>
                     <input class="input" type="text" placeholder="123 N Main St" bind:value={$userAddress.street1} on:input={async () => addressValid = await validateAddress($userAddress)} />
                 </label>
