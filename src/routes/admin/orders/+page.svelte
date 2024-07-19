@@ -29,20 +29,20 @@
         <div class="flex flex-col gap-4">
             {#each col as order}
             <div class="card p-4 flex flex-col gap-4">
-                <h2 class="text-xl font-bold">{order.shipping.address_to.name}</h2>
-                <small>{order.shipping.address_to.street1}, {#if order.shipping.address_to.street2 != ""}{order.shipping.address_to.street2}, {/if} {order.shipping.address_to.city}, {order.shipping.address_to.state} {order.shipping.address_to.zip}</small>
-                <small>{order.shipping.address_to.phone}</small>
-                <small>{order.shipping.address_to.email}</small>   
+                <h2 class="text-xl font-bold">{order?.shipping?.address_to?.name}</h2>
+                <small>{order.shipping.address_to?.street1}, {#if order.shipping.address_to?.street2 != ""}{order.shipping.address_to?.street2}, {/if} {order.shipping.address_to?.city}, {order.shipping?.address_to?.state} {order.shipping.address_to?.zip}</small>
+                <small>{order.shipping.address_to?.phone}</small>
+                <small>{order.shipping.address_to?.email}</small>   
                 <small>Donation Amount: <b>${order.donationAmount}</b></small>
                 <b>Products Ordered:</b>
                 <ProductList items={order.cart} />
                 <b>Selected Shipping Method: </b>
                 <div class='card token-rounded p-4 flex flex-row gap-4'>
-                    <Avatar src={order.shippingMethod.provider_image_200} class='w-12 h-12 aspect-square object-contain' />
+                    <Avatar src={order.shippingMethod?.provider_image_200} class='w-12 h-12 aspect-square object-contain' />
                     <span class="flex flex-col gap-4">
-                        <p>{order.shippingMethod.provider} - {order.shippingMethod.servicelevel?.name}</p>
-                        <small>{order.shippingMethod.duration_terms}</small>
-                        <b class="text-green-500">${order.shippingMethod.amount}</b>
+                        <p>{order.shippingMethod?.provider} - {order.shippingMethod?.servicelevel?.name}</p>
+                        <small>{order.shippingMethod?.duration_terms}</small>
+                        <b class="text-green-500">${order.shippingMethod?.amount}</b>
                     </span>
                 </div>
                 <button class='btn variant-filled-primary' on:click={() => modalStore.trigger({ type: 'component', component: { ref: OrderModal, props: { order: order }}})}>Manage Order</button>
